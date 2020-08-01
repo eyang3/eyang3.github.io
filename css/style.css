@@ -76,6 +76,19 @@ a:hover {
     width: 100%;
   }
 }
+.inner2 {
+  background-image: url("../files/exchangewire.jpg");
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  background-size: contain;
+  width: 1200px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1260px) {
+  .inner2 {
+    width: 100%;
+  }
+}
 #main-col {
   width: 900px;
 }
@@ -103,10 +116,13 @@ a:hover {
 }
 #header {
   text-shadow: 0 0 1px #fff;
-  margin: 50px auto;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  padding-left: 10px;
+  background-image: url("../files/exchangewire.jpg");
 }
 #header a {
-  color: #999;
+  color: #e3e3e3;
 }
 #header a:hover {
   color: #258fb8;
