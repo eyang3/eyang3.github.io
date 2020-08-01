@@ -1,0 +1,294 @@
+<!DOCTYPE HTML>
+<html lang="default">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Which Congressional Districts are Competitive | EmSpace</title>
+  <meta name="author" content="Eric Yang">
+  
+  <meta name="description" content="My Development Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Which Congressional Districts are Competitive">
+  <meta property="og:site_name" content="EmSpace">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="EmSpace" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">EmSpace</a></h1>
+  <h2><a href="/">Musings on Data Science and Software Development</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article id="post-testjs" class="h-entry post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time class="dt-published" datetime="2017-02-19T17:44:40.000Z"><a href="/2017/02/19/testjs/">2017-02-19</a></time>
+      
+      
+  
+    <h1 class="p-name title" itemprop="headline name">Which Congressional Districts are Competitive</h1>
+  
+
+    </header>
+    <div class="e-content entry" itemprop="articleBody">
+      
+        <p>For the 2018 Elections, the districts in pink are those that are strongly Republican based on voter registration. The ones in light blue are strongly democratic. The ones in dark purple are the ones that are currently held by Republicans, but have a Partisan Voter Index (PVI) under 4, which means that with a good ground campaign, would be well within the realm of possibility to flip. There are a total of 33 nominally competitive seats which is sufficient to flip control of the House of Representatives from Republican to Democrat. </p>
+<p>– Update</p>
+<p>Blindly grabbing data from Wikipedia is dumb. Previous map had old data of the 114th Congress. Current map is of the 115th congress. Some updates are that I’ve added in the Representative’s name, as well as listed the open seats due to special elections in Green. Montana I left as red even though it’s technically open, because while Zinke is supposed to be appointed to be secretary of the interior, the chances of flipping Montana are probably really low.</p>
+
+<div class="entry1">
+</div>
+<style>
+
+path {
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.districts {
+  fill: #bbb;
+}
+
+.districts :hover {
+  fill: orange;
+}
+
+.district-boundaries {
+  pointer-events: none;
+  fill: none;
+  stroke: #fff;
+  stroke-width: .5px;
+}
+
+.state-boundaries {
+  pointer-events: none;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+
+
+</style>
+<body>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="https://d3js.org/queue.v1.min.js"></script>
+<script src="https://d3js.org/topojson.v1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(function(){
+var width = 800,
+    height = 600;
+
+var projection = d3.geo.albersUsa()
+    .scale(960)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("div.entry1").append("svg")
+    .attr("width", width)
+    .attr("height", height)    
+
+queue()
+    .defer(d3.json, "/files/us.json")
+    .defer(d3.json, "/files/us-congress-113.json")
+    .defer(d3.json, "/files/PVI.json")
+    .await(ready);
+
+function ready(error, us, congress, PVI) {
+  if (error) throw error;
+
+  svg.append("defs").append("path")
+      .attr("id", "land")
+      .datum(topojson.feature(us, us.objects.land))
+      .attr("d", path);
+
+  svg.append("clipPath")
+      .attr("id", "clip-land")
+    .append("use")
+      .attr("xlink:href", "#land");
+ 
+  svg.append("g")
+      .attr("class", "districts")
+      .attr("clip-path", "url(#clip-land)")
+    .selectAll("path")
+      .data(topojson.feature(congress, congress.objects.districts).features)     
+    .enter().append("path")
+      .attr("d", path)
+       .attr("fill", function(d) {
+          if(PVI[d.id] == null) {
+              return '#bbb';
+          }
+          if(PVI[d.id].Flip === 'FALSE' && PVI[d.id].Current == 'R') {
+            return '#FFE3EB';
+          }
+          if(PVI[d.id].Flip === 'FALSE' && PVI[d.id].Current == 'D') {
+            return '#B5D3E7';
+          }
+          if(PVI[d.id].Flip === 'OPEN') {
+            return '#3f704d';
+          }
+          return '#663399';
+      })
+    .append("title")
+      .text(function(d) { if(PVI[d.id] == null) {
+          return 'Open\nDistrict: ' + (d.id % 100);
+      } 
+        return PVI[d.id].Rep +'\nDistrict: ' + (d.id % 100); })
+      
+
+  svg.append("path")
+      .attr("class", "district-boundaries")
+      .datum(topojson.mesh(congress, congress.objects.districts, function(a, b) { return a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0); }))
+      .attr("d", path);
+
+  svg.append("path")
+      .attr("class", "state-boundaries")
+      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; }))
+      .attr("d", path);
+}
+
+});
+</script>
+</body>
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Other/">Other</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://yoursite.com/2017/02/19/testjs/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="as_sitesearch" value="yoursite.com">
+  </form>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Musings/">Musings</a><small>2</small></li>
+  
+    <li><a href="/tags/Other/">Other</a><small>2</small></li>
+  
+    <li><a href="/tags/Software-Development-Management/">Software Development (Management)</a><small>1</small></li>
+  
+    <li><a href="/tags/Software-Development-Technical/">Software Development (Technical)</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Eric Yang
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery-3.4.1.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>

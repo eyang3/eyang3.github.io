@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html lang="default">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+  <title>Failures in Software Engineering | EmSpace</title>
+  <meta name="author" content="Eric Yang">
+  
+  <meta name="description" content="My Development Blog">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Failures in Software Engineering">
+  <meta property="og:site_name" content="EmSpace">
+
+  
+    <meta property="og:image" content="undefined">
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="EmSpace" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">EmSpace</a></h1>
+  <h2><a href="/">Musings on Data Science and Software Development</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article id="post-entsm1" class="h-entry post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time class="dt-published" datetime="2016-12-15T02:44:02.000Z"><a href="/2016/12/14/entsm1/">2016-12-14</a></time>
+      
+      
+  
+    <h1 class="p-name title" itemprop="headline name">Failures in Software Engineering</h1>
+  
+
+    </header>
+    <div class="e-content entry" itemprop="articleBody">
+      
+        <p>And why your organization can’t do large development projects. </p>
+<p>These are lessons that I learned from running my first large software development project, the obstacles that I smacked head first into, and what lessons we can learn organizationally. I can write about this in a some what optimistic manner because at the end, we did manage to put out a pretty damn good system, though in hindsight, we could have probably done so in much less time.</p>
+<p>The entires are numbered, though not by any significance. This post is the first entry only because it contains lessons that I learned. </p>
+<ol>
+<li>The wrong person is running the show and he wrote code for his PhD.</li>
+</ol>
+<p>Having me be the technical lead for this project was probably not the best idea in the world. It was my first time running a project of this complexity (basically one that me working alone could not have finished in a six months time) Despite actually having a computer science degree, the technical term of people like me is coding weenie and not software engineer. The difference is that while I can program, I treat coding as a tool to solve a problem, and I do not take kindly to people telling me what the requirements are, what buttons to put where, and how exactly they want to see the output. If I think <a href="https://en.wikipedia.org/wiki/SDTM" target="_blank" rel="noopener">SDTM</a> is a terrible standard for storing and querying data thought up by statisticians to make their narrow use case easier, I will fight you every step of the way if you tell me that you want an API that returns variables as sliced and diced SDTM domains. I will fight you every step of the way if you give me a requirement that is ambiguous and doesn’t make sense rather than make it so i.e. I want you to automatically join two variables, but I won’t tell you what the join conditions are. A proper software engineer knows not to fight this now, but to implement what you ask for, then when it fails points to your requirements document saying that it does exactly what you told him to do. </p>
+<p>Anyways, coding weenies spend too much time fighting for what’s right rather than realizing that the power of software is iteration and fixing things when they don’t perform to expectation. This is also why software projects end up being late. But sometimes we must realize that fighting for the perfect solution also wastes a whole lot of time, and it’s better to be late and have the customer understand it’s their fault and sharing the responsibility, rather than having it all fall on you. Joel Spolsky has warned about hiring PhD’s and while I disagree with him on it because I have a PhD, the mentality of build it, ship it, fix it later does have some merit. </p>
+<p>As an aside, I disagree with him that PhD’s aren’t about getting things done. PhD’s are all about getting things done. It’s just that we don’t want you to tell us how to get it done. And if you do. You better be right because we can see through your bullshit. </p>
+<p>The second thing in this category is that anyone who has written code for their PhD has a very high tolerance for bad code. Not so much that they are bad coders, but because we have to build on the work of others, and not everyone who works in computational <em>whatever</em> has formal training in coding. Therefore as part of my PhD, I saw some truly nasty code, and in the spirit of getting things done, doing the minimal work to turn it into a library, or worse piping output and parsing with PERL and piping into the input stream of my code are acceptable ways of solving the problem. Then if there is an error in the original code, I will wade through some god awful code in order to fix it. So when I see terrible code, provided that I can verify that it works properly through unit-tests and what not. I’ll let it slide. Code used to solve a problem for someone’s dissertation is basically spit, snot, twine and a bit of PERL mixed with a few nuggets of really elegant code. </p>
+<p>Code quality however is damned important once you start adding people who aren’t PhD’s to the project and don’t have such a tolerance for terrible code. You start adding outside developers, and once the project gets big enough that you can’t fit it inside your head, you’re going to be in trouble. In our first iteration of this project, code quality was pretty terrible because timelines were compressed and well, get it done and out. We treated version two as learning lessons from version one, and ended up rewriting the entire thing from scratch.</p>
+<p>The takeaway lesson from this is that if you’re going to run a large software project, make sure the guy running it has some experience running software projects first. And while I know that we all have to get experience somewhere and sink or swim is a pretty effective teacher, if you must get a newbie, don’t get the opinionated guy with the PhD. If you must use the guy with the PhD, stay out of his way. Tell him the problem and let him solve it however he wishes. </p>
+<p>When Joel Spolsky thinks that PhDs aren’t going to be successful as software developers he’s right. In most environments the guy with the PhD should be treated as a resource that you give a problem to when everyone else is stuck. However, there are certain environments and companies where dudes with PhDs are phenomenally successful such as that company Google many of you might have heard of. It’s because they defined the problem, solved it their way, with minimal orders (only advice). I would bet that if you made Brin and Page right out of their PhD, write inventory management software for Walmart, they’d be bashing their heads against their desks every day, pissing everyone off, and probably giving some project manager heartburn as they miss deadlines and ignore requirement documents. </p>
+<p>In the end I feel blessed because the organization that I worked for didn’t fire my butt at the end of release one, but allowed release 1 to limp along and gave me a second shot at the problem, this time with minimal interference and at the end I think we did something pretty neat.</p>
+
+      
+    </div>
+    <footer>
+      
+        
+        
+  
+  <div class="tags">
+    <a href="/tags/Software-Development-Management/">Software Development (Management)</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+    
+    
+      <a class="addthis_button_tweet"></a>
+    
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    
+    
+      <a class="addthis_button_pinterest_pinit" pi:pinit:layout="horizontal"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<section id="comment">
+  <h1 class="title">Comments</h1>
+
+  
+      <div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=123456789012345";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div class="fb-comments" data-href="http://yoursite.com/2016/12/14/entsm1/index.html" data-num-posts="5" data-width="840" data-colorscheme="light"></div>
+      
+  
+</section>
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="as_sitesearch" value="yoursite.com">
+  </form>
+</div>
+
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Tags</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/Musings/">Musings</a><small>2</small></li>
+  
+    <li><a href="/tags/Other/">Other</a><small>2</small></li>
+  
+    <li><a href="/tags/Software-Development-Management/">Software Development (Management)</a><small>1</small></li>
+  
+    <li><a href="/tags/Software-Development-Technical/">Software Development (Technical)</a><small>2</small></li>
+  
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2020 Eric Yang
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="/js/jquery-3.4.1.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
